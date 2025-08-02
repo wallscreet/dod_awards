@@ -2,11 +2,15 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 from utils import sanitize_filename, load_processed_list, append_processed_file
-from datetime import datetime
 from typing import List, Dict, Any
 import json
 from clients import XAIClient
 from models import DodContractInfo, DOD_RSS
+from dateutil import parser
+
+
+def parse_contract_date(date_string: str):
+    return parser.parse(date_string)
 
 
 def extract_contract_awards_content(url: str) -> list[str]:
@@ -35,7 +39,7 @@ def extract_contract_awards_content(url: str) -> list[str]:
     date_year = page_title.split("_")[4]
     
     date_string = f"{date_month} {date_day}, {date_year}"
-    contract_date = datetime.strptime(date_string, "%B %d, %Y")
+    contract_date = parse_contract_date(date_string=date_string)
     iso_date = contract_date.date().isoformat()
     # print(f"Contract Date: {contract_date}")
 
